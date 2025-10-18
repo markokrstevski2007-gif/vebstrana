@@ -22,7 +22,25 @@ padding:14px 0;
 .logo{
 display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.5px
 }
-<div class="logo" aria-label="AVM Marketing"> <a href="#home"><img src="assets/logo.svg" alt="AVM Marketing" class="logo-img"></a> <div><b>AVM</b> <span class="accent">MARKETING</span></div> </div>
+.logo .mark{
+width:26px;height:26px;position:relative;display:inline-block;
+transform:rotate(45deg);
+}
+.logo .mark::before, .logo .mark::after{
+content:"";position:absolute;inset:0;border-radius:4px;
+}
+.logo .mark::before{background:var(--brand-black)}
+.logo .mark::after{
+width:70%;height:70%;background:var(--brand-orange);
+right:-16%;top:-16%;border-radius:2px;transform:rotate(-45deg);
+box-shadow: 12px -12px 0 0 var(--brand-orange);
+}
+.logo b{color:var(--brand-black);font-weight:800}
+.logo .accent{color:var(--brand-orange);font-weight:700}
+nav ul{display:flex;gap:26px;list-style:none;margin:0;padding:0}
+nav a{
+color:#1f2937;font-weight:600;font-size:15px;padding:10px 4px;border-radius:8px
+}
 nav a:hover{color:var(--brand-orange)}
 
 .btn{
@@ -213,7 +231,7 @@ transform: translateY(-100%) !important;
 }
 }
 </style>
-.logo-img{ height:28px; width:auto; display:block } .logo .mark{ display:none }
+
 </head> <body> <!-- Header --> <header> <div class="container nav"> <div class="logo" aria-label="AVM Marketing"> <span class="mark" aria-hidden="true"></span> <div><b>AVM</b> <span class="accent">MARKETING</span></div> </div> <nav> <button class="menu-btn" aria-label="Open menu" onclick="toggleMenu()">☰</button> <ul id="menu"> <li><a href="#home">Home</a></li> <li><a href="#products">Packages</a></li> <li><a href="#about">About us</a></li> <li><a href="#contact">Contact</a></li> <li><a class="btn alt" href="#book">Book a call</a></li> </ul> </nav> </div> </header> <!-- Hero --> <section id="home"> <div class="container hero"> <div> <div class="hero-card"> <div class="eyebrow">Social media marketing agency</div> <h1>Grow revenue with high‑ROI ads, email, and lead generation.</h1> <p class="lead">AVM is your partner for performance marketing. We plan and run winning campaigns, nurture leads by email and automation, and build brand awareness that converts.</p> <div class="cta-row"> <a class="btn alt" href="#book">Book a call</a> <a class="btn" href="#products">Explore packages</a> </div> </div> </div> <div class="hero-visual" aria-hidden="true"> <div class="badge"><span class="dot"></span> Results-driven. Transparent. Scalable.</div> </div> </div> </section> <!-- Products / Packages --> <section id="products"> <div class="container"> <div class="section-title"> <span class="eyebrow">What we offer</span> <h2>Packages designed to meet you where you are</h2> <p>Choose a package that fits your growth stage. Every plan includes strategy, setup, optimization, and reporting.</p> </div>
 <div class="grid cols-3">
   <article class="card">
@@ -376,5 +394,5 @@ transform: translateY(-100%) !important;
     </form>
   </div>
 </div>
-
 </div> </section> <footer> <div class="container foot"> <div class="brand">© <span id="year"></span> AVM Marketing</div> <div>Based in North Macedonia • Strategy, Ads, Email, and Lead Generation</div> </div> </footer> <!-- Panel Lifting Transition Overlay --> <div class="avm-transition" aria-hidden="true" role="presentation"> <div class="avm-transition__panel" style="--i:0"></div> <div class="avm-transition__panel" style="--i:1"></div> <div class="avm-transition__panel" style="--i:2"></div> <div class="avm-transition__panel" style="--i:3"></div> <div class="avm-transition__panel" style="--i:4"></div> <div class="avm-transition__panel" style="--i:5"></div> <div class="avm-transition__panel" style="--i:6"></div> </div> <script> function toggleMenu(){ const m=document.getElementById('menu'); m.classList.toggle('show'); } function submitForm(e){ e.preventDefault(); alert("Thanks! Your request has been received. We'll be in touch shortly at contact@avm.com."); // Optional: send via mailto fallback try{ const form=e.target; const data=new FormData(form); let body=""; data.forEach((v,k)=>{ body+=k+": "+v+"%0D%0A"; }); window.open("mailto:contact@avm.com?subject=AVM%20Website%20Inquiry&body="+body,"_blank"); }catch(err){} e.target.reset(); } document.getElementById('year').textContent=new Date().getFullYear(); // Panel Lifting Transitions (cross-page + in-page anchors) (function () { const transitionEl = document.querySelector('.avm-transition'); if (!transitionEl) return; const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches; const rows = transitionEl.querySelectorAll('.avm-transition__panel').length; const ENTER_DUR = 820; // ms (keep in sync with CSS) const EXIT_DUR = 650; // ms (keep in sync with CSS) const STAGGER = 80; // ms (keep in sync with CSS) const totalTime = (base) => base + (rows - 1) * STAGGER; function enter() { if (prefersReduced) return; transitionEl.classList.remove('is-exiting'); transitionEl.classList.add('is-entering'); setTimeout(() => transitionEl.classList.remove('is-entering'), totalTime(ENTER_DUR) + 24); } function exit() { if (prefersReduced) return Promise.resolve(); transitionEl.classList.remove('is-entering'); transitionEl.classList.add('is-exiting'); return new Promise(res => setTimeout(res, totalTime(EXIT_DUR) + 24)); } // Play enter animation on load (skip when restoring from bfcache) window.addEventListener('pageshow', (e) => { if (!e.persisted) enter(); }); // Intercept clicks for transitions document.addEventListener('click', async (e) => { const a = e.target.closest('a[href]'); if (!a) return; // Allow modifier clicks (new tab/window) if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return; const href = a.getAttribute('href') || ''; if (!href) return; // Respect target other than _self if (a.target && a.target.toLowerCase() !== '_self') return; // Skip downloads and special schemes if (a.hasAttribute('download')) return; if (/^(mailto:|tel:)/i.test(href)) return; // In-page anchor: cover -> jump -> lift if (href.startsWith('#')) { e.preventDefault(); await exit(); // Jump to section under the cover const targetEl = document.querySelector(href); if (targetEl) { targetEl.scrollIntoView(); } else { location.hash = href; } // Close mobile menu if open const m=document.getElementById('menu'); if (m) m.classList.remove('show'); enter(); return; } // Same-origin full navigation: cover -> navigate const url = new URL(href, window.location.href); if (url.origin !== window.location.origin) return; e.preventDefault(); await exit(); window.location.href = url.href; }, { capture: true }); })(); </script> </body> </html>
+
